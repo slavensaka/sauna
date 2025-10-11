@@ -53,5 +53,19 @@ export const invalidMaps = {
       '        B-x'
     ],
     expectedError: 'Broken path'
+  },
+
+  multipleStartingPaths: {
+    map: [
+      '  x-B-@-A-x'
+    ],
+    expectedError: 'Multiple starting paths'
+  },
+
+  fakeTurn: {
+    map: [
+      '  @-A-+-B-x'
+    ],
+    expectedError: 'Fake turn'
   }
 };

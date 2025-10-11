@@ -35,5 +35,41 @@ export const validMaps = {
     ],
     expectedLetters: 'ACB',
     expectedPath: '@---A---+|||C---+|+-B-x'
+  },
+
+  doNotCollectLetterTwice: {
+    map: [
+      '     +-O-N-+',
+      '     |     |',
+      '     |   +-I-+',
+      ' @-G-O-+ | | |',
+      '     | | +-+ E',
+      '     +-+     S',
+      '             |',
+      '             x'
+    ],
+    expectedLetters: 'GOONIES',
+    expectedPath: '@-G-O-+|+-+|O||+-O-N-+|I|+-+|+-I-+|ES|x'
+  },
+
+  keepDirectionInCompactSpace: {
+    map: [
+      ' +-L-+',
+      ' |  +A-+',
+      '@B+ ++ H',
+      ' ++    x'
+    ],
+    expectedLetters: 'BLAH',
+    expectedPath: '@B+++B|+-L-+A+++A-+Hx'
+  },
+
+  ignoreStuffAfterEnd: {
+    map: [
+      '  @-A--+',
+      '       |',
+      '       +-B--x-C--D'
+    ],
+    expectedLetters: 'AB',
+    expectedPath: '@-A--+|+-B--x'
   }
 };

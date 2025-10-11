@@ -1,21 +1,4 @@
-// Init snake map
-const exampleMap = [
-  '  @---A---+',
-  '          |',
-  '  x-B-+   C',
-  '      |   |',
-  '      +---+'
-];
-
-const secondMap = [
-  '  @   ',
-  '  | +-C--+    ',
-  '  A |    |  ',
-  '  +---B--+  ',
-  '  |      x  ',
-  '  |      |  ',
-  '  +---D--+  '
-];
+import { validMaps } from '../tests/fixtures/validMaps';
 
 // Defines the poisiton in 2D jagged matrices x,y
 type Position = { x: number; y: number };
@@ -34,7 +17,6 @@ type FullState = {
   direction: Direction;
   letters: string;
   path: string;
-  visitedLetters: Set<string>;
 };
 
 // The result output
@@ -46,7 +28,7 @@ type Output = {
 // Jagged matrix holding our map
 type JaggedMatrix = string[][];
 
-// Approved characters
+// Approved characters 
 const approved_char = {
   start: '@',
   end: 'x',
@@ -113,6 +95,8 @@ function main(): void {
 
     // const result = dataFormatToJaggedMatrix(secondMap);
     // console.log(result);
+
+    console.log(validMaps.basic.map)
 
   } catch (error) {
     console.error('Error:', error instanceof Error ? error.message : String(error));
