@@ -1,15 +1,53 @@
+import { Position, Direction } from './vector';
 
-// Jagged matrix holding our map
-export type JaggedMatrix = string[][];
+// Result type for the function
+export type JaggedMatrixReturn = {
+  jaggedMatrix: string[][];
+  startPosition: Position | null;
+  endPosition: Position | null;
+};
 
-// Creats a 2D map with all the characters provided
-// Can be expanded with any other type of data format to turn it into a 2D map (jagged)
-export function dataFormatToJaggedMatrix(arrayMap: string[]): JaggedMatrix {
-  const jaggedMatrix: JaggedMatrix = [];
+// Creates a 2D map with all the characters provided
+// Returns object with jaggedMatrix, startPosition, endPosition
+export function dataFormatToJaggedMatrix(arrayMap: string[]): JaggedMatrixReturn {
+  const jaggedMatrix: string[][] = [];
+  let startPosition: Position | null = null;
+  let endPosition: Position | null = null;
 
+  // Find start char in map creation loop to save from looping again
+  // Find also the end char in map creation
   for (let y = 0; y < arrayMap.length; y++) {
     const row = arrayMap[y] ?? '';
-    jaggedMatrix.push(row.split(''));
+    const rowChars = row.split('');
+    jaggedMatrix.push(rowChars);
+
+    for (let x = 0; x < rowChars.length; x++) {
+      const char = rowChars[x];
+
+      if (char === '@' && startPosition === null) {
+        startPosition = { x, y };
+        console.log(`Found start '@' at position: x=${x}, y=${y}`);
+      }
+
+      if (char === 'x' && endPosition === null) {
+        endPosition = { x, y };
+        console.log(`Found end 'x' at position: x=${x}, y=${y}`);
+      }
+    }
   }
-  return jaggedMatrix;
+
+  // Log if not found
+  if (startPosition === null) {
+    console.log('Start character @ not found!');
+  }
+  if (endPosition === null) {
+    console.log('End character x not found!');
+  }
+
+  return {
+    jaggedMatrix,
+    startPosition,
+    endPosition
+  };
 }
+
