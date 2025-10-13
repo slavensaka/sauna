@@ -26,12 +26,10 @@ export function dataFormatToJaggedMatrix(arrayMap: string[]): JaggedMatrixReturn
 
       if (char === '@' && startPosition === null) {
         startPosition = { x, y };
-        console.log(`Found start '@' at position: x=${x}, y=${y}`);
       }
 
       if (char === 'x' && endPosition === null) {
         endPosition = { x, y };
-        console.log(`Found end 'x' at position: x=${x}, y=${y}`);
       }
     }
   }

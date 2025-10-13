@@ -1,4 +1,5 @@
 // Map
+import { Direction, Position, DirectionValue } from './vector';
 
 // Approved characters 
 export const approvedChar = {
@@ -24,4 +25,30 @@ export function isApprovedChar(char: string): boolean {
     }
   }
   return false;
+}
+
+export function getInitDirection(
+  jaggedMatrix: string[][],
+  startPosition: Position,
+  endPosition: Position
+): DirectionValue {
+
+  // Moving through 2d matrix by one as snake,
+  // based by one direciton
+  for (const direction of Object.values(Direction)) {
+    console.log(direction)
+    getCharacterAtPositionXY(jaggedMatrix, startPosition);
+    // console.log(startPosition.x, )
+    // console.log(jaggedMatrix,[startPosition.x],[startPosition.y])
+
+    // test = jaggedMatrix[startPosition.x][startPosition.y];
+    // isApprovedChar
+  }
+  return Direction.up;
+}
+
+export function getCharacterAtPositionXY(jaggedMatrix: string[][], startPosition: Position): string {
+  const char = jaggedMatrix[startPosition.y]![startPosition.x]!
+
+  return char;
 }
