@@ -15,10 +15,12 @@ function main(): void {
     // 2d jagged created, start found, now direction
     const { jaggedMatrix, startPosition, endPosition } = dataFormatToJaggedMatrix(validMaps.basic.map);
 
+    // We have startPosition and even endPosition
     if (startPosition && endPosition) {
       const initialDirection = getInitDirection(jaggedMatrix, startPosition, endPosition);
+      // console.log('initialDirection:', initialDirection)
       const startXY = getCharacterAtPositionXY(jaggedMatrix, startPosition);
-
+      console.log(startXY)
       // Create an output object instance
       const output: Output = {
         collectedLetters: '',
@@ -26,9 +28,9 @@ function main(): void {
       };
 
 
-      console.log('Initial direction:', initialDirection);
-      console.log('Start character:', startXY);
-      console.log('Output so far:', output);
+      // console.log('Initial direction:', initialDirection);
+      // console.log('Start character:', startXY);
+      // console.log('Output so far:', output);
 
 
 

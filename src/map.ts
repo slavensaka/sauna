@@ -1,5 +1,5 @@
 // Map
-import { Direction, Position, DirectionValue } from './vector';
+import { Direction, Position, DirectionValue, nextMove } from './vector';
 
 // Approved characters 
 export const approvedChar = {
@@ -33,22 +33,60 @@ export function getInitDirection(
   endPosition: Position
 ): DirectionValue {
 
-  // Moving through 2d matrix by one as snake,
+
+  // Moving through 2d matrix by +1 as a snake,
   // based by one direciton
   for (const direction of Object.values(Direction)) {
-    console.log(direction)
-    getCharacterAtPositionXY(jaggedMatrix, startPosition);
-    // console.log(startPosition.x, )
-    // console.log(jaggedMatrix,[startPosition.x],[startPosition.y])
 
+    const nextStep = nextMove(startPosition, direction);
+    const nextStepChar = getCharacterAtPositionXY(jaggedMatrix, nextStep);
+    // console.log('getCharacterAtPositionXY:', direction);
     // test = jaggedMatrix[startPosition.x][startPosition.y];
-    // isApprovedChar
+    const isOkChar = isApprovedChar(nextStepChar);
+    if (isOkChar) {
+      const trueForDirection = okForDirection(nextStepChar, direction)
+      if(trueForDirection) {
+        return direction;
+      }
+    } else {
+      console.error('Shouldn\'t be any other char, catch if I didnt expect something.');
+    }
+    // console.log(isApprovedChar)
   }
   return Direction.up;
 }
 
 export function getCharacterAtPositionXY(jaggedMatrix: string[][], startPosition: Position): string {
-  const char = jaggedMatrix[startPosition.y]![startPosition.x]!
-
+  const char = jaggedMatrix[startPosition.y]?.[startPosition.x] || ' ';
   return char;
+}
+
+function okForDirection(char: string, dir: DirectionValue): boolean {
+  // x, +, [A-Z] are ok for direction
+  if (char === approvedChar['end'] ||
+    char === approvedChar['spin'] ||
+    /^[A-Z]$/.test(char)) {
+    return true;
+  }
+
+  // Traveling vertically (up/down), and char is |, that's ok 
+  if (dir.name === Direction.up.name || dir.name === Direction.down.name) {
+    if (char === approvedChar['vertical_line']) {
+      return true;
+      // This is for going straight through intersections
+    } else if(char === approvedChar['horizontal_line']) {
+      return true;
+    }
+  }
+
+  // Traveling horizontally (left/right), and char is -, that's ok
+  if (dir.name === Direction.left.name || dir.name === Direction.right.name) {
+    if (char === approvedChar['horizontal_line']) {
+      return true;
+      // This is for going straight through intersections
+    } else if(char === approvedChar['vertical_line']) {
+      return true;
+    }
+  }
+  return false;
 }

@@ -15,7 +15,7 @@ export type DirectionKey = keyof typeof Direction;
 export type DirectionValue = typeof Direction[DirectionKey];
 
 // Moving +1 on 2D map using the new Direction object
-export function move(position: Position, direction: DirectionValue): Position {
+export function nextMove(position: Position, direction: DirectionValue): Position {
   return {
     x: position.x + direction.oneStep.x,
     y: position.y + direction.oneStep.y

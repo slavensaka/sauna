@@ -36,10 +36,10 @@ export function dataFormatToJaggedMatrix(arrayMap: string[]): JaggedMatrixReturn
 
   // Log if not found
   if (startPosition === null) {
-    console.log('Start character @ not found!');
+    console.error('Start character @ not found!');
   }
   if (endPosition === null) {
-    console.log('End character x not found!');
+    console.error('End character x not found!');
   }
 
   return {
