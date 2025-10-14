@@ -1,7 +1,7 @@
 export const validMaps = {
   basic: {
     map: [
-      '  @---A---+',
+      '  @--A---+',
       '          |',
       '  x-B-+   C',
       '      |   |',

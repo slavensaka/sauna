@@ -28,33 +28,30 @@ export function isApprovedChar(char: string): boolean {
   return false;
 }
 
-export function getInitDirection(
+export function getCorrectDirection(
   jaggedMatrix: string[][],
   startPosition: Position,
   endPosition: Position
-): DirectionValue {
+): { direction: DirectionValue; nextStepChar: string } {
 
 
   // Moving through 2d matrix by +1 as a snake,
   // based by one direciton
   for (const direction of Object.values(Direction)) {
-
     const nextStep = nextMove(startPosition, direction);
     const nextStepChar = getCharacterAtPositionXY(jaggedMatrix, nextStep);
-    // console.log('getCharacterAtPositionXY:', direction);
-    // test = jaggedMatrix[startPosition.x][startPosition.y];
     const isOkChar = isApprovedChar(nextStepChar);
     if (isOkChar) {
       const trueForDirection = okForDirection(nextStepChar, direction)
       if(trueForDirection) {
-        return direction;
+        return { direction, nextStepChar };
       }
     } else {
       console.error('Shouldn\'t be any other char, catch if I didnt expect something.');
     }
     // console.log(isApprovedChar)
   }
-  return Direction.up;
+  return { direction: Direction.up, nextStepChar: ' ' }; // Fallback
 }
 
 export function getCharacterAtPositionXY(jaggedMatrix: string[][], startPosition: Position): string {
@@ -62,7 +59,7 @@ export function getCharacterAtPositionXY(jaggedMatrix: string[][], startPosition
   return char;
 }
 
-function okForDirection(char: string, dir: DirectionValue): boolean {
+export function okForDirection(char: string, dir: DirectionValue): boolean {
   // x, +, [A-Z] are ok for direction
   if (char === approvedChar['end'] ||
     char === approvedChar['spin'] ||
@@ -91,19 +88,3 @@ function okForDirection(char: string, dir: DirectionValue): boolean {
   }
   return false;
 }
-
-// function navigateMap(
-//   map: JaggedMatrixReturn, 
-//   pos: Position, 
-//   dir: DirectionValue, 
-//   letters: string[], 
-//   path: string[], 
-//   visitedLetters: Set<string>
-// ): PathResult {
-//   const nextPos = getNextPosition(pos, dir);
-//   const char = getCharAt(map, nextPos.row, nextPos.col);
-  
-//   if (char === VALID_CHARS.END) {
-//     path.push(char);
-//     return { letters: letters.join(''), path: path.join('') };
-//   }

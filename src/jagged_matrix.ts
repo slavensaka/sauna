@@ -1,10 +1,11 @@
-import { Position, Direction } from './vector';
+import { Position } from './vector';
+import { approvedChar } from './map';
 
 // Result type for the function
 export type JaggedMatrixReturn = {
   jaggedMatrix: string[][];
-  startPosition: Position | null;
-  endPosition: Position | null;
+  startPosition: Position;
+  endPosition: Position;
 };
 
 // Creates a 2D map with all the characters provided
@@ -24,22 +25,22 @@ export function dataFormatToJaggedMatrix(arrayMap: string[]): JaggedMatrixReturn
     for (let x = 0; x < rowChars.length; x++) {
       const char = rowChars[x];
 
-      if (char === '@' && startPosition === null) {
+      if (char === approvedChar.start && startPosition === null) {
         startPosition = { x, y };
       }
 
-      if (char === 'x' && endPosition === null) {
+      if (char === approvedChar.end && endPosition === null) {
         endPosition = { x, y };
       }
     }
   }
 
-  // Log if not found
+  // Throw error if not found
   if (startPosition === null) {
-    console.error('Start character @ not found!');
+    throw new Error(`Start character '${approvedChar.start}' not found in the map!`);
   }
   if (endPosition === null) {
-    console.error('End character x not found!');
+    throw new Error(`End character '${approvedChar.end}' not found in the map!`);
   }
 
   return {
