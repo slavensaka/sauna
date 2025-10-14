@@ -14,23 +14,33 @@ function main(): void {
   try {
     // 2d jagged created, start found, now direction
     const { jaggedMatrix, startPosition, endPosition } = dataFormatToJaggedMatrix(validMaps.basic.map);
-
+    let pathTraveled: string[] = [];
     // We have startPosition and even endPosition
     if (startPosition && endPosition) {
+      pathTraveled.push('@');
       const initialDirection = getInitDirection(jaggedMatrix, startPosition, endPosition);
-      // console.log('initialDirection:', initialDirection)
-      const startXY = getCharacterAtPositionXY(jaggedMatrix, startPosition);
-      console.log(startXY)
-      // Create an output object instance
-      const output: Output = {
-        collectedLetters: '',
-        pathAsCharacters: startXY
-      };
+      console.log('initialDirection:', initialDirection)
+
+      
+
+      // for (let i = 0; i < jaggedMatrix.length; i++) {
+      //   const row = jaggedMatrix[i];
+      //   // console.log(row)
+      //   if (row) {
+      //     for (let j = 0; j < row.length; j++) {
+            
+           
+      //       // console.log(startXY)
+      //       // const startXY = getCharacterAtPositionXY(jaggedMatrix, startPosition);
+
+      //       // console.log(`Position [${i}][${j}]: ${row[j]}`);
+      //     }
+      //   }
+      // }
 
 
-      // console.log('Initial direction:', initialDirection);
-      // console.log('Start character:', startXY);
-      // console.log('Output so far:', output);
+
+
 
 
 

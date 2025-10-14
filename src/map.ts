@@ -1,5 +1,6 @@
 // Map
 import { Direction, Position, DirectionValue, nextMove } from './vector';
+import { JaggedMatrixReturn} from './jagged_matrix';
 
 // Approved characters 
 export const approvedChar = {
@@ -90,3 +91,19 @@ function okForDirection(char: string, dir: DirectionValue): boolean {
   }
   return false;
 }
+
+// function navigateMap(
+//   map: JaggedMatrixReturn, 
+//   pos: Position, 
+//   dir: DirectionValue, 
+//   letters: string[], 
+//   path: string[], 
+//   visitedLetters: Set<string>
+// ): PathResult {
+//   const nextPos = getNextPosition(pos, dir);
+//   const char = getCharAt(map, nextPos.row, nextPos.col);
+  
+//   if (char === VALID_CHARS.END) {
+//     path.push(char);
+//     return { letters: letters.join(''), path: path.join('') };
+//   }
