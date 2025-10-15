@@ -22,10 +22,13 @@ export function nextMove(position: Position, direction: DirectionValue): Positio
   };
 }
 
-// Full state of the worm going through 2d "maze", letters eaten, path traveresed, already collected letters
-// type FullState = {
-//   position: Position;
-//   direction: Direction;
-//   letters: string;
-//   path: string;
-// };
+// Filter out backwards move (opposite direction)
+export const getOppositeDirection = (dir: DirectionValue): string => {
+        switch (dir.name) {
+          case 'up': return 'down';
+          case 'down': return 'up';
+          case 'left': return 'right';
+          case 'right': return 'left';
+          default: return '';
+        }
+      };
