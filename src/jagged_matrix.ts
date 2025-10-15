@@ -8,6 +8,12 @@ export type JaggedMatrixReturn = {
   endPosition: Position;
 };
 
+// The result output
+export type Output = {
+  collectedLetters: string;
+  pathAsCharacters: string;
+}
+
 // Creates a 2D map with all the characters provided
 // Returns object with jaggedMatrix, startPosition, endPosition
 export function dataFormatToJaggedMatrix(arrayMap: string[]): JaggedMatrixReturn {

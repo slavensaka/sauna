@@ -1,88 +1,84 @@
 import { validMaps } from '../tests/fixtures/validMaps';
 import { Position, Direction, DirectionValue, nextMove } from './vector';
-import { approvedChar, isApprovedChar, getCorrectDirection, getCharacterAtPositionXY, okForDirection } from './map';
-import { dataFormatToJaggedMatrix } from './jagged_matrix';
-// The result output
-type Output = {
-  collectedLetters: string;
-  pathAsCharacters: string;
-}
-
-
+import { getCurrentDirection, getCharacterAtPositionXY, chooseNextMove } from './map';
+import { dataFormatToJaggedMatrix, Output } from './jagged_matrix';
 
 function main(): void {
-  // 2d jagged created, start found, now direction
-  const { jaggedMatrix, startPosition, endPosition } = dataFormatToJaggedMatrix(validMaps.basic.map);
-  let pathTraveled: string[] = [];
-  // We have startPosition and even endPosition
-  pathTraveled.push('@'); // we have start char
-  const result = getCorrectDirection(jaggedMatrix, startPosition, endPosition);
-  let firstNextDirection = result.direction
-  let firstNextStepChar = result.nextStepChar
-  
-  let nextDirection: DirectionValue;
-  let nextPositionUse: Position;
-  let nextChar: string;
+  try {
+    const { jaggedMatrix, startPosition } = dataFormatToJaggedMatrix(validMaps.basic.map);
 
-  let loop: number = 1;
+    // Start positon set tu current s owe can loop 
+    let currentPosition = startPosition;
+    // Added initial path @, since were at that position already
+    let result: Output = {
+      collectedLetters: '',
+      pathAsCharacters: '@'
+    };
 
-  while (loop < 10) {
-    try {
-
-      let nowPosition = nextMove(startPosition, result.direction)
-      const nowChar = getCharacterAtPositionXY(jaggedMatrix, nowPosition);
-      const isOkChar = isApprovedChar(nowChar);
-      if (isOkChar) {
-        const result = getCorrectDirection(jaggedMatrix, nowPosition, endPosition);
-        const trueForDirection = okForDirection(nowChar, result.direction)
-
-        if(trueForDirection) {
-          console.log(result)
-        }
-      }
-      
-      // let nextStep = getCorrectDirection(jaggedMatrix, nowPosition, endPosition);
-      
-      // nextDirection = nextStep.direction;
-      // nextPositionUse = nextStep.nextStep;
-      // nextChar = nextStep.nextStepChar;
-
-      // let nextPosition = nextMove(nextPositionUse, nextDirection)
-
-      // pathTraveled.push(nextChar);
-      // console.log(nextPosition)
-      // if (nextChar === approvedChar.end) {
-      //   // path.push(currentChar);
-      //   break;
-      // }
-      // console.group(nextChar.length)
-
-      //   const validMoves = findValidNextMoves(
-      //   map,
-      //   currentPos,
-      //   currentDir,
-      //   currentChar
-      // );
-
-
-
-
-
-
-
-      loop++;
-      // throw new Error('Break point');
-    } catch (error) {
-      console.error('Error:', error instanceof Error ? error.message : String(error));
-      return;
+    let visitedPositions = new Set<string>();
+    visitedPositions.add(`${startPosition.x},${startPosition.y}`);
+    
+    // Find initial direction using getCurrentDirection
+    const initialMoves = getCurrentDirection(jaggedMatrix, currentPosition, undefined, true);
+    // If return empty we don't have any more moves
+    if (initialMoves.length === 0 || !initialMoves[0]) {
+      throw new Error('No valid initial direction found');
     }
+    let currentDirection = initialMoves[0].direction;
+
+
+    // Main traversal loop
+    let step = 1;
+    while (step <= 50) {
+      // Find all valid moves from current position
+      const validMoves = getCurrentDirection(jaggedMatrix, currentPosition, visitedPositions);
+
+      if (validMoves.length === 0) {
+        console.log('No valid moves found!');
+        break;
+      }
+
+      const currentChar = getCharacterAtPositionXY(jaggedMatrix, currentPosition);
+      const chosenMove = chooseNextMove(validMoves, currentChar, currentDirection);
+
+      if (!chosenMove) {
+        console.log('No valid move found!');
+        break;
+      }
+      // Move to chosen position
+      currentPosition = chosenMove.position;
+      currentDirection = chosenMove.direction;
+      const posKey = `${chosenMove.position.x},${chosenMove.position.y}`;
+      visitedPositions.add(posKey);
+      result.pathAsCharacters += chosenMove.character;
+
+      // Collect letters (A-Z)
+      if (/^[A-Z]$/.test(chosenMove.character)) {
+        result.collectedLetters += chosenMove.character;
+      }
+
+      // console.log(`Step ${step}: (${currentPosition.x}, ${currentPosition.y}) | '${chosenMove.character}' | ${chosenMove.direction.name}`);
+      // console.log(`Current path: ${result.pathAsCharacters}`);
+
+      // Check if we've reached the end
+      if (chosenMove.character === 'x') {
+        console.log('Reached the end!');
+        break;
+      }
+
+      step++;
+    }
+
+    // console.log('\n=== FINAL RESULT ===');
+    console.log('Total steps:', step);
+    console.log('Collected Letters:', result.collectedLetters);
+    console.log('Path as Characters:', result.pathAsCharacters);
+    console.log('Path Length:', result.pathAsCharacters.length);
+
+  } catch (error) {
+    console.error('Error:', error instanceof Error ? error.message : String(error));
   }
 }
-
 if (require.main === module) {
   main();
 }
-
-// Re-export functions for testing
-export { isApprovedChar } from './map';
-export { dataFormatToJaggedMatrix } from './jagged_matrix';

@@ -1,6 +1,6 @@
 // Map
 import { Direction, Position, DirectionValue, nextMove } from './vector';
-import { JaggedMatrixReturn} from './jagged_matrix';
+import { JaggedMatrixReturn } from './jagged_matrix';
 
 // Approved characters 
 export const approvedChar = {
@@ -30,28 +30,23 @@ export function isApprovedChar(char: string): boolean {
 
 export function getCorrectDirection(
   jaggedMatrix: string[][],
-  startPosition: Position,
-  endPosition: Position
+  position: Position,
+  currentDirection?: DirectionValue
 ): { direction: DirectionValue; nextStepChar: string } {
 
-
-  // Moving through 2d matrix by +1 as a snake,
-  // based by one direciton
+  // Find the first valid direction from current position
   for (const direction of Object.values(Direction)) {
-    const nextStep = nextMove(startPosition, direction);
-    const nextStepChar = getCharacterAtPositionXY(jaggedMatrix, nextStep);
-    const isOkChar = isApprovedChar(nextStepChar);
-    if (isOkChar) {
-      const trueForDirection = okForDirection(nextStepChar, direction)
-      if(trueForDirection) {
-        return { direction, nextStepChar };
+    const nextPos = nextMove(position, direction);
+    const nextChar = getCharacterAtPositionXY(jaggedMatrix, nextPos);
+    if (isApprovedChar(nextChar)) {
+      if (okForDirection(nextChar, direction)) {
+        return { direction, nextStepChar: nextChar };
       }
-    } else {
-      console.error('Shouldn\'t be any other char, catch if I didnt expect something.');
     }
-    // console.log(isApprovedChar)
   }
-  return { direction: Direction.up, nextStepChar: ' ' }; // Fallback
+
+  // Fallback if no valid direction found
+  throw new Error(`No valid direction found from position (${position.x}, ${position.y})`);
 }
 
 export function getCharacterAtPositionXY(jaggedMatrix: string[][], startPosition: Position): string {
@@ -67,24 +62,73 @@ export function okForDirection(char: string, dir: DirectionValue): boolean {
     return true;
   }
 
-  // Traveling vertically (up/down), and char is |, that's ok 
+  // Traveling vertically (up/down), need vertical line |
   if (dir.name === Direction.up.name || dir.name === Direction.down.name) {
-    if (char === approvedChar['vertical_line']) {
-      return true;
-      // This is for going straight through intersections
-    } else if(char === approvedChar['horizontal_line']) {
-      return true;
+    return char === approvedChar['vertical_line'];
+  }
+
+  // Traveling horizontally (left/right), need horizontal line -
+  if (dir.name === Direction.left.name || dir.name === Direction.right.name) {
+    return char === approvedChar['horizontal_line'];
+  }
+  return false;
+}
+
+function isHorizontal(direction: DirectionValue): boolean {
+  return direction.name === 'left' || direction.name === 'right';
+}
+
+function isVertical(direction: DirectionValue): boolean {
+  return direction.name === 'up' || direction.name === 'down';
+}
+
+export function chooseNextMove(
+  validMoves: Array<{ direction: DirectionValue; position: Position; character: string; posKey: string }>,
+  currentChar: string,
+  currentDirection: DirectionValue
+): { direction: DirectionValue; position: Position; character: string; posKey: string } | null {
+
+  if (validMoves.length === 0) return null;
+
+  // At intersection (+), turn perpendicular to current direction
+  if (currentChar === '+') {
+    const perpendicularMoves = validMoves.filter(move => {
+      return isHorizontal(currentDirection) ? isVertical(move.direction) : isHorizontal(move.direction);
+    });
+    return perpendicularMoves[0] || validMoves[0] || null;
+  }
+
+  // Normal movement - continue in same direction if possible
+  const sameDirection = validMoves.find(move => move.direction.name === currentDirection.name);
+  return sameDirection || validMoves[0] || null;
+}
+
+export function getCurrentDirection(
+  jaggedMatrix: string[][],
+  position: Position,
+  visitedPositions?: Set<string>,
+  returnFirst: boolean = false
+): Array<{ direction: DirectionValue; position: Position; character: string; posKey: string }> {
+
+  const validMoves = [];
+  for (const direction of Object.values(Direction)) {
+    const nextPos = nextMove(position, direction);
+    const nextChar = getCharacterAtPositionXY(jaggedMatrix, nextPos);
+    const posKey = `${nextPos.x},${nextPos.y}`;
+
+    // Check if move is valid and not visited (if visitedPositions provided)
+    const isValidMove = okForDirection(nextChar, direction);
+    const isNotVisited = !visitedPositions || !visitedPositions.has(posKey);
+
+    if (isValidMove && isNotVisited) {
+      validMoves.push({ direction, position: nextPos, character: nextChar, posKey });
+
+      // If returnFirst is true, return immediately after finding first valid move
+      if (returnFirst) {
+        return validMoves;
+      }
     }
   }
 
-  // Traveling horizontally (left/right), and char is -, that's ok
-  if (dir.name === Direction.left.name || dir.name === Direction.right.name) {
-    if (char === approvedChar['horizontal_line']) {
-      return true;
-      // This is for going straight through intersections
-    } else if(char === approvedChar['vertical_line']) {
-      return true;
-    }
-  }
-  return false;
+  return validMoves;
 }

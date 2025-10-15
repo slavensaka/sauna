@@ -5,8 +5,8 @@ export type Position = { x: number; y: number };
 
 // Defines the current direction, can only be one
 export const Direction = {
-  up: { name: 'up', oneStep: { x: 0, y: 1 } },
-  down: { name: 'down', oneStep: { x: 0, y: -1 } },
+  up: { name: 'up', oneStep: { x: 0, y: -1 } },
+  down: { name: 'down', oneStep: { x: 0, y: 1 } },
   left: { name: 'left', oneStep: { x: -1, y: 0 } },
   right: { name: 'right', oneStep: { x: 1, y: 0 } }
 } as const;

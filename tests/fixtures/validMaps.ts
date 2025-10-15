@@ -1,11 +1,11 @@
 export const validMaps = {
   basic: {
     map: [
-      '  @--A---+',
-      '          |',
-      '  x-B-+   C',
-      '      |   |',
-      '      +---+'
+      ' @---A---+',
+      '         |',
+      ' x-B-+   C',
+      '     |   |',
+      '     +---+'
     ],
     expectedLetters: 'ACB',
     expectedPath: '@---A---+|C|+---+|+-B-x'
